@@ -46,15 +46,7 @@ export class HomePage {
 
       const result: TextDetectionResult =
         await CapacitorPluginMlKitTextRecognition.detectText(options);
-
-      console.log('Detected text:', result.text);
-      this.detectedText = result.text; 
-      // result.blocks.forEach((block) => {
-      //   console.log('Block text:', block.text);
-      //   block.lines.forEach((line) => {
-      //     console.log('Line text:', line.elements.map((e) => e.text).join(' '));
-      //   });
-      // });
+        this.detectedText = result.blocks.map((block) => block.text).join("\n\n");
     } catch (error) {
       console.error('Error recognizing text:', error);
     }
@@ -113,22 +105,22 @@ export class HomePage {
     });
   }
 
-  async takePicture() {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 75,
-        source: CameraSource.Camera,
-        resultType: CameraResultType.Base64, // Use Base64 to get the image data
-      });
+  // async takePicture() {
+  //   try {
+  //     const image = await Camera.getPhoto({
+  //       quality: 75,
+  //       source: CameraSource.Camera,
+  //       resultType: CameraResultType.Base64, // Use Base64 to get the image data
+  //     });
 
-      if (image.base64String) {
-        await this.recognizeText(image.base64String); // Pass base64 string
-      } else {
-        console.error('Error: Image does not contain base64 data.');
-      }
-    } catch (error) {
-      console.error('Error taking picture:', error);
-    }
-  }
+  //     if (image.base64String) {
+  //       await this.recognizeText(image.base64String); // Pass base64 string
+  //     } else {
+  //       console.error('Error: Image does not contain base64 data.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error taking picture:', error);
+  //   }
+  // }
   constructor() {}
 }

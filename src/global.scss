@@ -24,6 +24,16 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url("assets/fonts/OpenDyslexic-Regular.woff") format('woff'),
+    url("assets/fonts/OpenDyslexic-Regular.woff2") format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+body, p, span, div, h1, h2, h3, h4, h5, h6, ion-label, ion-text {
+    font-family: 'OpenDyslexic', sans-serif !important;
+}
 
 /**
  * Ionic Dark Mode
