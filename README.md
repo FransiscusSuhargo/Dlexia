@@ -3,7 +3,7 @@
 
  Setup: 
  Clone repository 
- Terminal
+ 
  cd dlexia 
  npm install 
  npm run build

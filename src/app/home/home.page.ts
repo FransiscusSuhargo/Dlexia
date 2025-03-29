@@ -36,6 +36,7 @@ import { BrowserModule } from '@angular/platform-browser';
   ],
 })
 export class HomePage {
+  detectedText = ""; 
   async recognizeText(base64Image: string) {
     try {
       const options: DetectImageOptions = {
@@ -47,6 +48,7 @@ export class HomePage {
         await CapacitorPluginMlKitTextRecognition.detectText(options);
 
       console.log('Detected text:', result.text);
+      this.detectedText = result.text; 
       // result.blocks.forEach((block) => {
       //   console.log('Block text:', block.text);
       //   block.lines.forEach((line) => {
