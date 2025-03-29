@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">dlexia</string>
+    <string name="title_activity_main">dlexia</string>
+    <string name="package_name">ionic.dlexia</string>
+    <string name="custom_url_scheme">ionic.dlexia</string>
+</resources>

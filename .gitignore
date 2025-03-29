@@ -37,13 +37,6 @@ node_modules/
 package-lock.json
 npm-debug.log
 
-# Capacitor / Cordova platforms & plugins
-android/
-ios/
-plugins/
-platforms/
-build/
-
 # Ionic build output
 www/
 .sass-cache/
