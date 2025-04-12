@@ -37,6 +37,9 @@ import { BrowserModule } from '@angular/platform-browser';
 })
 export class HomePage {
   detectedText = ""; 
+  test(){
+    console.log('test');
+  }
   async recognizeText(base64Image: string) {
     try {
       const options: DetectImageOptions = {
