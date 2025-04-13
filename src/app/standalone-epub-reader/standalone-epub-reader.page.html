@@ -3,17 +3,34 @@
     <ion-title>EPUB Reader</ion-title>
     <ion-spinner *ngIf="!rendition" slot="end"></ion-spinner>
     <ion-buttons slot="end">
-      <ion-button (click)="toggleTtsControls()">
-        MICs
-      </ion-button>
-    </ion-buttons>
+      <ion-button (click)="toggleTtsControls()"> MICs </ion-button>
+    <ion-button (click)="toggleRsvp()">
+      RSVP
+    </ion-button>
+  </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
   <div #viewer id="viewer" style="height: 100%; width: 100%"></div>
+  <!-- Add inside <ion-content> -->
+  
 
   <!-- TTS Controls INSIDE content with fixed positioning -->
+  <div *ngIf="rsvpActive" class="rsvp-overlay" (click)="toggleRsvpPause()">
+    <div class="rsvp-word">{{ currentRsvpWord }}</div>
+    <div class="rsvp-controls">
+      <ion-range
+        min="100"
+        max="1000"
+        step="50"
+        [(ngModel)]="rsvpSpeed"
+        (ionChange)="setRsvpSpeed($event)"
+      >
+        <ion-label slot="start">{{ rsvpSpeed }}wpm</ion-label>
+      </ion-range>
+    </div>
+  </div>
   <div class="tts-controls">
     <ion-toolbar>
       <!-- Your existing control content -->

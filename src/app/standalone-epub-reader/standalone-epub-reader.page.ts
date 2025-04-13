@@ -39,6 +39,12 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
   private wordElements: Element[] = [];
   private highlightInterval: any;
   private speechStartTime = 0;
+  rsvpActive = false;
+  rsvpPaused = true;
+  currentRsvpWord = '';
+  public rsvpWords: string[] = [];
+  private rsvpTimeout: any;
+  rsvpSpeed = 300; // Default speed in words per minute
 
   constructor(
     private route: ActivatedRoute,
@@ -100,7 +106,8 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
         width: '100%',
         height: '100%',
         spread: 'none',
-        flow: 'scrolled-continuous',
+        flow: 'scrolled',
+        // flow: 'scrolled-continuous',
         manager: 'continuous',
         allowScriptedContent: true,
       });
@@ -287,6 +294,7 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
             return;
           }
 
+
           const fullCfi = `${sectionCfi}${localCfi}`;
           // console.log('Navigation CFI:', fullCfi);
 
@@ -341,5 +349,58 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
 
   setTtsSpeed(event: any) {
     this.tts.setSpeed(parseFloat(event.detail.value));
+  }
+
+  // Add these methods
+  toggleRsvp() {
+    this.rsvpActive = !this.rsvpActive;
+    if (this.rsvpActive) {
+      this.startRsvp();
+    } else {
+      this.stopRsvp();
+    }
+  }
+
+  private startRsvp() {
+    this.rsvpWords = this.words.filter((word) => word.trim().length > 0);
+    this.currentRsvpWord = '';
+    this.rsvpPaused = false;
+    this.showTtsControls = false; // Hide TTS controls if needed
+
+    let index = 0;
+    const wordsPerMinute = this.rsvpSpeed;
+    const delay = 60000 / wordsPerMinute;
+
+    const showWord = () => {
+      if (!this.rsvpPaused && index < this.rsvpWords.length) {
+        this.currentRsvpWord = this.rsvpWords[index];
+        index++;
+        this.rsvpTimeout = setTimeout(showWord, delay);
+      }
+    };
+
+    this.rsvpTimeout = setTimeout(showWord, delay);
+  }
+
+  stopRsvp() {
+    this.rsvpPaused = true;
+    clearTimeout(this.rsvpTimeout);
+    this.currentRsvpWord = '';
+    this.rsvpActive = false;
+  }
+
+  toggleRsvpPause() {
+    this.rsvpPaused = !this.rsvpPaused;
+    if (!this.rsvpPaused) {
+      this.startRsvp();
+    }
+  }
+
+  setRsvpSpeed(event: any) {
+    this.rsvpSpeed = event.detail.value;
+    if (this.rsvpActive) {
+      this.stopRsvp();
+      this.startRsvp();
+    }
   }
 }
