@@ -9,6 +9,11 @@ export const routes: Routes = [
   {
     path: 'library',
     loadComponent: () => import('./tabs/library/library.page').then( m => m.LibraryPage)
+  },
+  {
+    path: 'test-page',
+    loadComponent: () => import('./tabs/test-page/test-page.page').then( m => m.TestPagePage)
   }
+
 
 ];

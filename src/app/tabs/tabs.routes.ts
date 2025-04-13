@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { LibraryPage } from './library/library.page';
 
 export const tabsRoutes: Routes = [
   {
@@ -19,15 +20,21 @@ export const tabsRoutes: Routes = [
         loadComponent: () => import('./epub-reader/epub-reader.page').then(m => m.EpubReaderPage),
       },
       {
-        path: '',
-        redirectTo: '/tabs/home',
-        pathMatch: 'full'
+        path: 'test',
+        loadComponent: () => import('./test-page/test-page.page').then(m=>m.TestPagePage),
+      },
+      // Remove the empty path redirect from here
+      // Add this as the last child to catch any undefined tabs routes
+      {
+        path: '**',
+        redirectTo: 'home'
       }
     ]
   },
+  // Keep this as the global redirect
   {
     path: '',
-    redirectTo: '/tabs/home',
-    pathMatch: 'full',
+    redirectTo: 'tabs/home',
+    pathMatch: 'full'
   }
 ];

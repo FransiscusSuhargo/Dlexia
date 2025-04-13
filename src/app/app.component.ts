@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import {
   IonApp,
   IonTabs,
@@ -7,7 +7,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonIcon,
-  IonLabel
+  IonLabel,
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -22,9 +22,15 @@ import {
     IonTabButton,
     IonIcon,
     IonLabel,
-    RouterModule
-  ]
+    RouterModule,
+  ],
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        console.log('Current URL:', event.url);
+      }
+    });
+  }
 }

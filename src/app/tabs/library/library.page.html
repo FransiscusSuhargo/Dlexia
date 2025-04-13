@@ -1,13 +1,30 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>library</ion-title>
+    <ion-title>My Library</ion-title>
+    <ion-buttons slot="end">
+      <app-file-upload (filesProcessed)="loadLibrary()"></app-file-upload>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">library</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  @if (loading) {
+    <div class="loading-container">
+      <ion-spinner></ion-spinner>
+    </div>
+  } @else if (books.length === 0) {
+    <div class="empty-state">
+      <ion-icon name="library-outline"></ion-icon>
+      <p>No books found. Upload your first EPUB!</p>
+    </div>
+  } @else {
+    <ion-list>
+      @for (book of books; track book.path) {
+        <app-book-card 
+          [book]="book"
+          (selected)="openBook($event)"
+        ></app-book-card>
+      }
+    </ion-list>
+  }
 </ion-content>
