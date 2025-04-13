@@ -13,7 +13,11 @@ export const routes: Routes = [
   {
     path: 'test-page',
     loadComponent: () => import('./tabs/test-page/test-page.page').then( m => m.TestPagePage)
+  },  {
+    path: 'standalone-epub-reader',
+    loadComponent: () => import('./standalone-epub-reader/standalone-epub-reader.page').then( m => m.StandaloneEpubReaderPage)
   }
+
 
 
 ];

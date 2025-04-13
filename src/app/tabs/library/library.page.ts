@@ -81,7 +81,13 @@ export class LibraryPage implements OnInit {
 
 // Update openBook
 async openBook(book: Book) {
-  this.router.navigate(['/tabs/reader'], {
+  // this.router.navigate(['/tabs/reader'], {
+  //   state: {
+  //     epubPath: book.path,
+  //     metadata: book.metadata
+  //   }
+  // });
+  this.router.navigate(['/standalone-epub-reader'], {
     state: {
       epubPath: book.path,
       metadata: book.metadata

@@ -9,10 +9,19 @@
     z-index: 1000; // Ensure footer is above the tab bar
     width: 100%;
   }
-  
-  // Add padding to ion-content when TTS controls are visible
-  ion-content.with-tts-padding {
-    --padding-bottom: 160px; // Adjust based on your footer's height
-  }
 
+  .tts-controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--ion-background-color);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    padding-bottom: env(safe-area-inset-bottom); /* For iPhone notch */
+  }
   
+  /* Add padding to content when controls are visible */
+  ion-content.with-tts-padding {
+    --padding-bottom: 160px; /* Adjust based on your controls height */
+  }

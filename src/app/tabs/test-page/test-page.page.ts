@@ -39,49 +39,6 @@ import { CommonModule } from '@angular/common';
         <ion-title>TTS Test</ion-title>
       </ion-toolbar>
     </ion-header>
-
-    <ion-content class="ion-padding">
-      <ion-item>
-        <ion-textarea
-          [(ngModel)]="text"
-          placeholder="Enter text to speak"
-          autoGrow
-        ></ion-textarea>
-      </ion-item>
-
-      <ion-item>
-        <ion-range
-          [ngModel]="tts.settings.rate"
-          (ionChange)="handleSpeedChange($event)"
-          min="0.5"
-          max="2"
-          step="0.1"
-        >
-          <ion-label slot="start">Speed: {{ tts.settings.rate }}</ion-label>
-        </ion-range>
-      </ion-item>
-
-      <ion-item>
-        <ion-select
-          [ngModel]="tts.settings.voiceIndex"
-          (ionChange)="tts.setVoice($event.detail.value)"
-        >
-          <ion-select-option
-            *ngFor="let voice of tts.voices; let i = index"
-            [value]="i"
-          >
-            {{ voice.name }} ({{ voice.lang }})
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-button
-        expand="block"
-        (click)="tts.isSpeaking ? tts.stop() : tts.speak(text)"
-      >
-        {{ tts.isSpeaking ? 'Stop' : 'Speak' }}
-      </ion-button>
-    </ion-content>
   `,
 })
 export class TestPagePage {

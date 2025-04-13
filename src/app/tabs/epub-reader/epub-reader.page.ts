@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import ePub, { Book, Rendition, Contents } from 'epubjs';
@@ -16,6 +16,10 @@ import { TtsService } from 'src/app/services/tts.service';
 })
 export class EpubReaderPage implements AfterViewInit, OnDestroy {
   @ViewChild('viewer', { static: true }) viewer!: ElementRef;
+  @HostBinding('class.with-tts-padding') get ttsPadding() {
+    return this.showTtsControls;
+  }
+  
   book!: Book;
   rendition!: Rendition;
   epubPath!: string;
@@ -135,6 +139,6 @@ export class EpubReaderPage implements AfterViewInit, OnDestroy {
   }
 
   setTtsVoice(event: any) {
-    this.tts.setVoice(parseInt(event.detail.value));
+    // this.tts.setVoice(parseInt(event.detail.value));
   }
 }
