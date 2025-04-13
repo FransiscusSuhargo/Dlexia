@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../node_modules/capacitor-document-scanner/dist/esm/web.js"],
+  "sourcesContent": ["import { WebPlugin } from '@capacitor/core';\nexport class DocumentScannerWeb extends WebPlugin {\n  async scanDocument(options) {\n    console.log(options);\n    throw this.unimplemented('Not implemented on web.');\n  }\n}\n"],
+  "mappings": ";;;;;;;;AACO,IAAM,qBAAN,cAAiC,UAAU;AAAA,EAC1C,aAAa,SAAS;AAAA;AAC1B,cAAQ,IAAI,OAAO;AACnB,YAAM,KAAK,cAAc,yBAAyB;AAAA,IACpD;AAAA;AACF;",
+  "names": []
+}

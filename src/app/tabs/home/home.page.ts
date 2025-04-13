@@ -1,31 +1,18 @@
-import { Component } from '@angular/core';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-} from '@ionic/angular/standalone';
-import {
-  DetectImageOptions,
-  TextDetectionResult,
-  CapacitorPluginMlKitTextRecognition,
-} from '@pantrist/capacitor-plugin-ml-kit-text-recognition';
-import {
-  Camera,
-  CameraResultType,
-  CameraSource,
-  Photo,
-} from '@capacitor/camera';
-import { DocumentScanner } from 'capacitor-document-scanner';
-import { Capacitor } from '@capacitor/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { IonicModule } from '@ionic/angular';
 import { BrowserModule } from '@angular/platform-browser';
+import { CapacitorPluginMlKitTextRecognition, DetectImageOptions, TextDetectionResult } from '@pantrist/capacitor-plugin-ml-kit-text-recognition';
+import { DocumentScanner } from 'capacitor-document-scanner';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  standalone: true,
   imports: [
     IonHeader,
     IonToolbar,
@@ -107,23 +94,5 @@ export class HomePage {
       reader.readAsDataURL(blob); // This returns a data URL that includes the base64 data
     });
   }
-
-  // async takePicture() {
-  //   try {
-  //     const image = await Camera.getPhoto({
-  //       quality: 75,
-  //       source: CameraSource.Camera,
-  //       resultType: CameraResultType.Base64, // Use Base64 to get the image data
-  //     });
-
-  //     if (image.base64String) {
-  //       await this.recognizeText(image.base64String); // Pass base64 string
-  //     } else {
-  //       console.error('Error: Image does not contain base64 data.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error taking picture:', error);
-  //   }
-  // }
   constructor() {}
 }

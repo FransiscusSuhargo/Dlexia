@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../../node_modules/@pantrist/capacitor-plugin-ml-kit-text-recognition/dist/esm/web.js"],
+  "sourcesContent": ["import { WebPlugin } from '@capacitor/core';\nexport class CapacitorPluginMlKitTextRecognitionWeb extends WebPlugin {\n  // @ts-ignore\n  detectText(options) {\n    return Promise.reject(\"Web Plugin Not implemented\");\n  }\n}\n"],
+  "mappings": ";;;;;;AACO,IAAM,yCAAN,cAAqD,UAAU;AAAA;AAAA,EAEpE,WAAW,SAAS;AAClB,WAAO,QAAQ,OAAO,4BAA4B;AAAA,EACpD;AACF;",
+  "names": []
+}

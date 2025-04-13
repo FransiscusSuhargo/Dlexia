@@ -19,7 +19,6 @@ import {
     IonContent,
     IonHeader,
     IonTitle,
-    IonToolbar,
     CommonModule,
     FormsModule,
     IonicModule,

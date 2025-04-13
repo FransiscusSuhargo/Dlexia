@@ -1,18 +1,93 @@
+
+<!-- <ion-tab-button tab="tab1" routerLink="/tabs/home">
+  <ion-icon aria-hidden="true" name="triangle"></ion-icon>
+  <ion-label>Home</ion-label>
+</ion-tab-button>
+
+<ion-tab-button tab="tab2" routerLink="/tabs/library">
+  <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
+  <ion-label>Library</ion-label>
+</ion-tab-button>
+
+<ion-tab-button tab="tab3" routerLink="/tabs/reader">
+  <ion-icon aria-hidden="true" name="square"></ion-icon>
+  <ion-label>Epub Reader</ion-label>
+</ion-tab-button> -->
+
+<style>
+ion-tabs {
+  contain: none;
+  overflow: visible;
+}
+
+.ion-page {
+  overflow: visible;
+}
+
+ion-tab-bar {
+  contain: none;
+  overflow: visible;
+  background: #92A695;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: visible;
+}
+
+ion-tab-bar::part(native) {
+  overflow: visible;
+}
+
+ion-tab-button {
+  background-color: #92A695;
+  color: #293B2C;
+  position: relative;
+  z-index: 1;
+}
+
+.scanner {
+  /* width: 40px; */
+  background-color: #293B2C;
+  color: #FFEECE;
+  border-radius: 50%;
+  margin-bottom: 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  overflow: visible;
+}
+</style>
+
+<!-- Bottom Tabs -->
 <ion-tabs>
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tab1" routerLink="/tabs/home">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
+    <ion-tab-button
+      tab="home"
+      [routerLink]="['/home']"
+      routerLinkActive="router-link-active">
+      <ion-icon name="home"></ion-icon>
       <ion-label>Home</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab2" routerLink="/tabs/library">
-      <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
-      <ion-label>Library</ion-label>
+    <ion-tab-button 
+      class="scanner" 
+      tab="scanner" 
+      [routerLink]="['/scanner']" 
+      routerLinkActive="router-link-active">
+      <ion-icon name="camera"></ion-icon>
+      <ion-label>Scan</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab3" routerLink="/tabs/reader">
-      <ion-icon aria-hidden="true" name="square"></ion-icon>
-      <ion-label>Epub Reader</ion-label>
+    <ion-tab-button
+      tab="badge"
+      [routerLink]="['/badge']"
+      routerLinkActive="router-link-active">
+      <ion-icon name="ribbon"></ion-icon>
+      <ion-label>Badge</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
