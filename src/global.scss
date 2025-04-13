@@ -37,13 +37,15 @@ body, p, span, div, h1, h2, h3, h4, h5, h6, ion-label, ion-text {
 ion-header{
     background: #92A695;
     margin: 0;
-    padding-top: 25px;
+    padding-top: 35px;
     border: none;
     box-shadow: none;
 }
 ion-title, ion-toolbar{
     --background: #92A695;
     color: #FFEECE;
+    font-size: 28px;
+    font-weight: bold;
     margin: 0;
     padding: 0;
     border: none;

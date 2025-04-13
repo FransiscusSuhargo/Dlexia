@@ -1,3 +1,23 @@
+<style>
+  ion-grid{
+    margin: auto;
+  }
+  ion-row {
+    height: 15vh;
+    margin: 0;
+    padding: 0;
+  }
+  ion-col {
+    width: 15vh;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>badge</ion-title>
@@ -10,4 +30,24 @@
       <ion-title size="large">badge</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col><img src="..\..\..\assets\icon\b read.png" alt=""></ion-col>
+      <ion-col><img src="..\..\..\assets\icon\b scan.png" alt=""></ion-col>
+      <ion-col><img src="..\..\..\assets\icon\b streak.png" alt=""></ion-col>
+    </ion-row>
+  
+    <ion-row>
+      <ion-col><img src="..\..\..\assets\icon\s read.png" alt=""></ion-col>
+      <ion-col><img src="..\..\..\assets\icon\s scan.png" alt=""></ion-col>
+      <ion-col><img src="..\..\..\assets\icon\s streak.png" alt=""></ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col><img src="..\..\..\assets\icon\g read.png" alt=""></ion-col>
+      <ion-col><img src="..\..\..\assets\icon\g scan.png" alt=""></ion-col>
+      <ion-col><img src="..\..\..\assets\icon\g streak.png" alt=""></ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

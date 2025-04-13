@@ -5,26 +5,21 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">scanner</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-button expand="full" (click)="scanDocument()">Scan Document</ion-button>
   
-  <div class="ion-text-center" style="margin-top: 20px;">
+  <div class="scanned-container">
     <h2>Scanned Document</h2>
-    <img id="scannedImage" alt="Scanned Document" style="width: 100%; max-width: 400px; margin: auto;" />
-  </div>
+    <img id="scannedImage" alt="Scanned Document" />
+  </div>  
   <ion-list>
     <ion-item>
-      Detected Text:
-    </ion-item>
-    <ion-item>
-      <ion-text style="white-space: pre-wrap; word-break: break-word;">
+      <ion-text style="white-space: pre-wrap; word-break: break-word; text-align: left;">
         {{ detectedText }}
       </ion-text>
     </ion-item>
   </ion-list>
+
+  <ion-button expand="full" (click)="scanDocument()">
+    <ion-icon slot="start" name="camera"></ion-icon> 
+    Scan Document</ion-button>
+
 </ion-content>

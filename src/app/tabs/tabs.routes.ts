@@ -7,10 +7,6 @@ export const tabsRoutes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'home',
-        loadComponent: () => import('./home/home.page').then(m => m.HomePage),
-      },
-      {
         path: 'library',
         loadComponent: () => import('./library/library.page').then(m => m.LibraryPage),
       },

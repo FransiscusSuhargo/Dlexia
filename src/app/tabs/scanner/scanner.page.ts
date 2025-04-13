@@ -10,12 +10,6 @@ import {
   TextDetectionResult,
   CapacitorPluginMlKitTextRecognition,
 } from '@pantrist/capacitor-plugin-ml-kit-text-recognition';
-import {
-  Camera,
-  CameraResultType,
-  CameraSource,
-  Photo,
-} from '@capacitor/camera';
 import { DocumentScanner } from 'capacitor-document-scanner';
 import { Capacitor } from '@capacitor/core';
 import { IonicModule } from '@ionic/angular';
