@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>EPUB Reader</ion-title>
+    <ion-spinner *ngIf="!rendition" slot="end"></ion-spinner>
   </ion-toolbar>
 </ion-header>
 
