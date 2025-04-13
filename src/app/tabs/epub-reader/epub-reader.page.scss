@@ -3,5 +3,16 @@
     display: block;
     height: 100%;
   }
- 
+  ion-footer {
+    position: fixed;
+    bottom: var(--ion-tab-bar-height, 56px); // Use tab bar height variable with a fallback
+    z-index: 1000; // Ensure footer is above the tab bar
+    width: 100%;
+  }
+  
+  // Add padding to ion-content when TTS controls are visible
+  ion-content.with-tts-padding {
+    --padding-bottom: 160px; // Adjust based on your footer's height
+  }
+
   

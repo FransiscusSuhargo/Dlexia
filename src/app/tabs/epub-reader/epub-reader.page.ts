@@ -1,10 +1,11 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import ePub, { Book, Rendition } from 'epubjs';
+import ePub, { Book, Rendition, Contents } from 'epubjs';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TtsService } from 'src/app/services/tts.service';
 
 @Component({
   selector: 'app-epub-reader',
@@ -18,10 +19,15 @@ export class EpubReaderPage implements AfterViewInit, OnDestroy {
   book!: Book;
   rendition!: Rendition;
   epubPath!: string;
-
+  
+  // TTS related properties
+  currentText: string = '';
+  showTtsControls = false;
+  
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public tts: TtsService
   ) {}
 
   async ngAfterViewInit() {
@@ -43,6 +49,7 @@ export class EpubReaderPage implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     window.removeEventListener('keyup', this.onKeyUp);
+    this.tts.stop();
     this.book?.destroy();
   }
 
@@ -74,6 +81,14 @@ export class EpubReaderPage implements AfterViewInit, OnDestroy {
         allowScriptedContent: true
       });
 
+      // Setup TTS content extraction
+      this.rendition.on('rendered', (section: Contents) => {
+        this.currentText = '';
+        section.document.body.querySelectorAll('p, h1, h2, h3, h4, h5, h6').forEach(el => {
+          this.currentText += el.textContent + ' ';
+        });
+      });
+
       await this.rendition.display();
     } catch (error) {
       console.error('Error loading EPUB:', error);
@@ -98,5 +113,28 @@ export class EpubReaderPage implements AfterViewInit, OnDestroy {
         this.scrollDown();
         break;
     }
+  }
+
+  // TTS Controls
+  toggleTtsControls() {
+    this.showTtsControls = !this.showTtsControls;
+  }
+
+  playTts() {
+    if (this.currentText) {
+      this.tts.speak(this.currentText);
+    }
+  }
+
+  pauseTts() {
+    this.tts.stop();
+  }
+
+  setTtsSpeed(event: any) {
+    this.tts.setSpeed(parseFloat(event.detail.value));
+  }
+
+  setTtsVoice(event: any) {
+    this.tts.setVoice(parseInt(event.detail.value));
   }
 }
