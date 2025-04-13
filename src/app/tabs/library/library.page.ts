@@ -19,11 +19,12 @@ import { LibraryService } from 'src/app/services/library.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Book } from '../../models/book'; // Ensure this interface exists
+import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-library',
-  templateUrl: 'library.page.html',
-  styleUrls: ['library.page.scss'],
+  templateUrl: './library.page.html',
+  styleUrls: ['./library.page.scss'],
   standalone: true,
   imports: [
     IonHeader,
@@ -59,9 +60,16 @@ export class LibraryPage implements OnInit {
 
   async loadLibrary() {
     try {
+      const rawBooks = await Preferences.get({ key: 'EPUB_LIBRARY' });
+      console.log('Raw library data:', rawBooks.value);
+      
+      this.books = await this.libraryService.getLibrary();
+      console.log('Parsed books:', this.books);
+      
       this.books = await this.libraryService.getLibrary();
       this.books.sort((a, b) => 
         new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime()
+
       );
     } catch (error) {
       console.log('Failed to load library');
@@ -71,15 +79,15 @@ export class LibraryPage implements OnInit {
     }
   }
 
-  openBook(book: Book) {
-    // this.router.navigate(['/tabs/reader'], {
-    //   state: { 
-    //     path: book.path,
-    //     metadata: book.metadata
-    //   }
-    // });
-    console.log('book opened')
-  }
+// Update openBook
+async openBook(book: Book) {
+  this.router.navigate(['/reader'], {
+    state: {
+      epubPath: book.path,
+      metadata: book.metadata
+    }
+  });
+}
 
   handleImageError(event: Event) {
     const img = event.target as HTMLImageElement;

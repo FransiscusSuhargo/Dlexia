@@ -1,9 +1,8 @@
-// components/file-upload/file-upload.component.ts
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FilePicker } from '@capawesome/capacitor-file-picker';
 import { EpubParserService } from '../services/epub-parser.service';
-import { IonicModule } from '@ionic/angular';
 import { IonButton, IonIcon } from '@ionic/angular/standalone';
+import { LibraryService } from '../services/library.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -17,38 +16,46 @@ import { IonButton, IonIcon } from '@ionic/angular/standalone';
   imports: [IonButton, IonIcon],
 })
 export class FileUploadComponent {
+  @Output() filesProcessed = new EventEmitter<void>();
   errorMessage = '';
 
-  constructor(private epubParser: EpubParserService) {}
-  // components/file-upload/file-upload.component.ts
+  constructor(
+    private epubParser: EpubParserService,
+    private libraryService: LibraryService // Add service injection
+  ) {}
+
   async pickEpubFiles() {
     this.errorMessage = '';
 
     try {
       const result = await FilePicker.pickFiles({
         types: ['application/epub+zip'],
-        readData: true, // Ensure we get file data
+        readData: true,
       });
 
       for (const file of result.files) {
         try {
+          let bookData;
+          
           if (file.path) {
-            // Handle via file path
-            await this.epubParser.processEpub(file.path, file.name);
+            // Handle native file path
+            bookData = await this.epubParser.processEpub(file.path, file.name);
           } else if (file.blob) {
-            // Handle via blob data
-            console.log('success');
+            // Handle web file blob
             const base64 = await this.blobToBase64(file.blob);
-            console.log('blob success');
-            await this.epubParser.processEpubFromData(base64, file.name);
-            console.log('parse success');
-          } else {
-            console.log('No valid file data found');
+            bookData = await this.epubParser.processEpubFromData(base64, file.name);
+          }
+
+          if (bookData) {
+            await this.libraryService.addToLibrary(bookData);
+            console.log('Added book:', bookData.metadata.title);
           }
         } catch (e: any) {
-          console.log(`Failed to process ${file.name}: ${e.message}`);
+          console.error(`Failed to process ${file.name}:`, e);
         }
       }
+
+      this.filesProcessed.emit(); // Notify parent to refresh
     } catch (error) {
       console.log('File selection canceled or failed');
     }
@@ -57,7 +64,13 @@ export class FileUploadComponent {
   private blobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to read blob as base64'));
+        }
+      };
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });

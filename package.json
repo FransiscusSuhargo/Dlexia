@@ -37,7 +37,6 @@
     "@capawesome/capacitor-file-picker": "^7.0.1",
     "@ionic/angular": "^8.0.0",
     "@ionic/storage": "^4.0.0",
-    "@ionic/storage-angular": "^4.0.0",
     "@pantrist/capacitor-plugin-ml-kit-text-recognition": "^7.0.0",
     "@types/he": "^1.2.3",
     "capacitor-document-scanner": "github:FransiscusSuhargo/docusign-cap-7.0-",
