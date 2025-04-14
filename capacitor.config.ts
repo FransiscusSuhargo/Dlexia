@@ -8,6 +8,13 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchShowDuration: 0
     }
+  },
+  server: {
+    androidScheme: 'https',
+    allowNavigation: ['*'] // Add this line
+  },
+  android: {
+    allowMixedContent: true // Add this line
   }
 };
 

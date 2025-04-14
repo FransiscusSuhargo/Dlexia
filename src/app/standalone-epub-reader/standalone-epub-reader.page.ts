@@ -118,12 +118,25 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
         this.extractText();
       });
 
-      this.rendition.themes.default({
-        'body, p, span, div, h1, h2, h3, h4, h5, h6': {
-          'font-family': "'OpenDyslexic', sans-serif !important"
-        }
+      this.rendition.hooks.content.register((frame: any) => {
+        const doc = frame.document as Document;
+        const style = doc.createElement('style');
+        style.textContent = `
+          @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('assets/fonts/OpenDyslexic-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+          }
+          body * {
+            font-family: 'OpenDyslexic', sans-serif !important;
+            line-height: 1.6 !important;
+            letter-spacing: 0.1em !important;
+          }
+        `;
+        doc.head.appendChild(style);
       });
-      
+
       await this.rendition.display();
     } catch (error) {
       console.error('Error loading EPUB:', error);
