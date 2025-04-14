@@ -121,49 +121,19 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
       this.rendition.hooks.content.register((frame: any) => {
         const doc = frame.document as Document;
         const style = doc.createElement('style');
-        const css = `
-        @font-face {
-          font-family: 'OpenDyslexic';
-          src: url('http://localhost/assets/fonts/OpenDyslexic-Regular.woff2') format('woff2');
-          font-weight: normal;
-          font-style: normal;
-        }
-        @font-face {
-          font-family: 'OpenDyslexic';
-          src: url('http://localhost/assets/fonts/OpenDyslexic-Bold.woff2') format('woff2');
-          font-weight: bold;
-          font-style: normal;
-        }
-        *:not(code):not(pre):not(iframe) {
-          font-family: 'OpenDyslexic', sans-serif !important;
-          letter-spacing: 0.1em !important;
-          line-height: 1.8 !important;
-        }
-      `;
-        doc
-          .querySelectorAll('style, link[rel="stylesheet"]')
-          .forEach((el) => el.remove());
-
-        // Create and append new style
-        style.id = 'dyslexia-styles';
-        style.textContent = css;
-        doc.head.appendChild(style);
-
-        // Force font family on all elements
-        doc.querySelectorAll('*').forEach((el) => {
-          (el as HTMLElement).style.setProperty(
-            'font-family',
-            'OpenDyslexic, sans-serif',
-            'important'
-          );
-        });
-
-        // Add font load verification
-        const testSpan = doc.createElement('span');
-        testSpan.style.fontFamily = 'OpenDyslexic, sans-serif';
-        testSpan.style.position = 'absolute';
-        testSpan.style.visibility = 'hidden';
-        testSpan.textContent = 'FontTest';
+        style.textContent = `
+          @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('assets/fonts/OpenDyslexic-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+          }
+          body * {
+            font-family: 'OpenDyslexic', sans-serif !important;
+            line-height: 1.6 !important;
+            letter-spacing: 0.1em !important;
+          }
+        `;
         doc.head.appendChild(style);
       });
 
