@@ -34,6 +34,7 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
   // TTS related properties
   currentText: string = '';
   showTtsControls = false;
+  private currentRsvpIndex = 0; // Add this line
   private currentWordIndex = 0;
   private words: string[] = [];
   private wordElements: Element[] = [];
@@ -177,7 +178,7 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
         });
 
         this.currentText = fullText.trim();
-        console.log('Extracted text:', this.currentText);
+        // console.log('Extracted text:', this.currentText);
         console.log('Word count:', this.words.length);
         console.log('Elements count:', this.wordElements.length);
       }
@@ -205,132 +206,173 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
     }
   }
 
-  // TTS Controls
-  toggleTtsControls() {
-    this.showTtsControls = !this.showTtsControls;
-  }
+  // Add these properties to your component
+  ttsState: 'stopped' | 'playing' | 'paused' = 'stopped';
+  rsvpState: 'stopped' | 'playing' | 'paused' = 'stopped';
 
-  async playTts() {
-    console.log('play pressssed');
-
-    if (!this.words.length) return;
-
-    this.clearHighlight();
-
-    // Calculate delay based on current rate (words per minute)
-    const baseDelay = 60000 / 160; // Average 160 WPM
-    const delay = baseDelay / this.tts.currentRate;
-
-    const highlightWord = () => {
-      if (this.currentWordIndex < this.words.length) {
-        this.highlightCurrentWord();
-        this.currentWordIndex++;
-        // console.log(this.currentWordIndex);
-        requestAnimationFrame(highlightWord);
-      }
-    };
-
-    // Start with initial delay based on rate
-    setTimeout(() => {
-      requestAnimationFrame(highlightWord);
-    }, 1000 / this.tts.currentRate);
-
+  // Modified TTS methods
+  // In your component class
+  async toggleTts() {
     try {
-      this.speechStartTime = Date.now();
-      await this.tts.speak(this.currentText);
-    } finally {
-      this.clearHighlight();
-      clearInterval(this.highlightInterval);
+      if (this.ttsState === 'stopped') {
+        this.ttsState = 'playing'; // Update state first
+        await this.playTts();
+        console.log(this.ttsState);
+      } else if (this.ttsState === 'playing') {
+        this.ttsState = 'paused'; // Update state first
+        await this.tts.pause();
+        console.log(this.ttsState);
+      } else {
+        // paused state
+        this.ttsState = 'playing'; // Update state first
+        await this.tts.resume();
+        console.log(this.ttsState);
+      }
+    } catch (e) {
+      console.error('TTS error:', e);
+      this.ttsState = 'stopped';
     }
   }
 
-  private highlightCurrentWord() {
-    this.clearHighlight();
+  private async playTts() {
+    if (!this.currentText) return;
+    await this.tts.speak(this.currentText);
+  }
 
-    if (this.currentWordIndex >= this.wordElements.length) return;
+  // Modified RSVP methods
+  toggleRsvp() {
+    console.log('Toggle RSVP');
 
-    const element = this.wordElements[this.currentWordIndex];
+    if (this.rsvpState === 'stopped') {
+      this.startRsvp();
+      this.rsvpState = 'playing';
+    } else {
+      this.rsvpState = 'stopped';
+    }
+  }
 
-    // Get all rendered contents sections
-    const contents = this.rendition.getContents() as unknown as Contents[];
+  // Add this method for RSVP playback control
+  toggleRsvpPlayback() {
+    if (this.rsvpState === 'playing') {
+      this.pauseRsvp();
+      this.rsvpState = 'paused';
+    } else {
+      this.resumeRsvp();
+      this.rsvpState = 'playing';
+    }
+  }
 
-    // Find the content section that contains our element
-    const containingContent = contents.find((content) => {
-      try {
-        return content.document.contains(element);
-      } catch (e) {
-        console.warn('Content document access error:', e);
-        return false;
-      }
-    });
+  private resumeRsvp() {
+    this.rsvpPaused = false;
+    this.rsvpState = 'playing';
+    this.showNextRsvpWord();
+  }
 
-    if (!containingContent?.document) {
-      console.warn('No containing content found for element:', element);
+  private pauseRsvp() {
+    this.rsvpPaused = true;
+    clearTimeout(this.rsvpTimeout);
+  }
+
+  private showNextRsvpWord() {
+    if (this.rsvpPaused || this.currentRsvpIndex >= this.rsvpWords.length) {
+      this.stopRsvp();
       return;
     }
 
-    try {
-      const range = containingContent.document.createRange();
-      const textNode = element.childNodes[0];
+    this.currentRsvpWord = this.rsvpWords[this.currentRsvpIndex];
+    this.currentRsvpIndex++;
 
-      if (textNode?.nodeType === Node.TEXT_NODE) {
-        const textContent = textNode.textContent || '';
-        const word = this.words[this.currentWordIndex];
-        const wordIndex = textContent.indexOf(word);
-
-        if (wordIndex >= 0) {
-          range.setStart(textNode, wordIndex);
-          range.setEnd(textNode, wordIndex + word.length);
-
-          // Get the base CFI for this section
-          const sectionCfi = containingContent.cfiBase;
-
-          // Generate CFI relative to the section
-          const localCfi = containingContent.cfiFromRange(range);
-
-          if (!localCfi) {
-            console.warn('Failed to generate local CFI');
-            return;
-          }
-
-
-          const fullCfi = `${sectionCfi}${localCfi}`;
-          // console.log('Navigation CFI:', fullCfi);
-
-          // Verify the CFI before displaying
-          const section = this.book.spine.get(sectionCfi);
-          if (!section) {
-            console.warn('Invalid section CFI:', sectionCfi);
-            return;
-          }
-
-          // Display the CFI location and wait for rendering
-          this.rendition
-            .display(fullCfi)
-            .then(() => {
-              console.log('section succcesful', fullCfi);
-              // Add highlight after rendering completes
-              this.rendition.annotations.highlight(
-                fullCfi,
-                {},
-                () => console.log('Highlight clicked'),
-                'current-word-highlight',
-                {
-                  fill: 'rgba(255,0,0,0.3)',
-                  'fill-opacity': '0.3',
-                  'mix-blend-mode': 'multiply',
-                }
-              );
-            })
-            .catch((e) => {
-              console.error('CFI display failed:', e);
-            });
-        }
-      }
-    } catch (e) {
-      console.error('Highlight error:', e);
-    }
+    this.rsvpTimeout = setTimeout(() => {
+      this.showNextRsvpWord();
+    }, 60000 / this.rsvpSpeed);
   }
+
+  // private highlightCurrentWord() {
+  //   this.clearHighlight();
+
+  //   if (this.currentWordIndex >= this.wordElements.length) return;
+
+  //   const element = this.wordElements[this.currentWordIndex];
+
+  //   // Get all rendered contents sections
+  //   const contents = this.rendition.getContents() as unknown as Contents[];
+
+  //   // Find the content section that contains our element
+  //   const containingContent = contents.find((content) => {
+  //     try {
+  //       return content.document.contains(element);
+  //     } catch (e) {
+  //       console.warn('Content document access error:', e);
+  //       return false;
+  //     }
+  //   });
+
+  //   if (!containingContent?.document) {
+  //     console.warn('No containing content found for element:', element);
+  //     return;
+  //   }
+
+  //   try {
+  //     const range = containingContent.document.createRange();
+  //     const textNode = element.childNodes[0];
+
+  //     if (textNode?.nodeType === Node.TEXT_NODE) {
+  //       const textContent = textNode.textContent || '';
+  //       const word = this.words[this.currentWordIndex];
+  //       const wordIndex = textContent.indexOf(word);
+
+  //       if (wordIndex >= 0) {
+  //         range.setStart(textNode, wordIndex);
+  //         range.setEnd(textNode, wordIndex + word.length);
+
+  //         // Get the base CFI for this section
+  //         const sectionCfi = containingContent.cfiBase;
+
+  //         // Generate CFI relative to the section
+  //         const localCfi = containingContent.cfiFromRange(range);
+
+  //         if (!localCfi) {
+  //           console.warn('Failed to generate local CFI');
+  //           return;
+  //         }
+
+  //         const fullCfi = `${sectionCfi}${localCfi}`;
+  //         // console.log('Navigation CFI:', fullCfi);
+
+  //         // Verify the CFI before displaying
+  //         const section = this.book.spine.get(sectionCfi);
+  //         if (!section) {
+  //           console.warn('Invalid section CFI:', sectionCfi);
+  //           return;
+  //         }
+
+  //         // Display the CFI location and wait for rendering
+  //         this.rendition
+  //           .display(fullCfi)
+  //           .then(() => {
+  //             console.log('section succcesful', fullCfi);
+  //             // Add highlight after rendering completes
+  //             this.rendition.annotations.highlight(
+  //               fullCfi,
+  //               {},
+  //               () => console.log('Highlight clicked'),
+  //               'current-word-highlight',
+  //               {
+  //                 fill: 'rgba(255,0,0,0.3)',
+  //                 'fill-opacity': '0.3',
+  //                 'mix-blend-mode': 'multiply',
+  //               }
+  //             );
+  //           })
+  //           .catch((e) => {
+  //             console.error('CFI display failed:', e);
+  //           });
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.error('Highlight error:', e);
+  //   }
+  // }
 
   private clearHighlight() {
     // Clear all current highlights
@@ -350,35 +392,14 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
     this.tts.setSpeed(parseFloat(event.detail.value));
   }
 
-  // Add these methods
-  toggleRsvp() {
-    this.rsvpActive = !this.rsvpActive;
-    if (this.rsvpActive) {
-      this.startRsvp();
-    } else {
-      this.stopRsvp();
-    }
-  }
-
   private startRsvp() {
     this.rsvpWords = this.words.filter((word) => word.trim().length > 0);
     this.currentRsvpWord = '';
     this.rsvpPaused = false;
     this.showTtsControls = false; // Hide TTS controls if needed
-
-    let index = 0;
-    const wordsPerMinute = this.rsvpSpeed;
-    const delay = 60000 / wordsPerMinute;
-
-    const showWord = () => {
-      if (!this.rsvpPaused && index < this.rsvpWords.length) {
-        this.currentRsvpWord = this.rsvpWords[index];
-        index++;
-        this.rsvpTimeout = setTimeout(showWord, delay);
-      }
-    };
-
-    this.rsvpTimeout = setTimeout(showWord, delay);
+    this.rsvpState = 'playing';
+    this.currentRsvpIndex = 0; // Initialize index
+    this.showNextRsvpWord();
   }
 
   stopRsvp() {

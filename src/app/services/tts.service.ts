@@ -6,6 +6,10 @@ import { TextToSpeech } from '@capacitor-community/text-to-speech';
 export class TtsService {
   public isSpeaking = false;
   public currentRate = 1.0;
+  private currentChunkIndex = 0;
+  private textChunks: string[] = [];
+  private startTime = 0;
+  private pauseTimeout: any;
 
   constructor() {
     this.initializeTts();
@@ -15,39 +19,61 @@ export class TtsService {
     await this.loadPreferences();
   }
 
-  async speak(text: string) {
-    if (!text?.trim()) {
-      console.error('TTS: Empty text after sanitization');
+  async speak(fullText: string) {
+    await this.stop();
+    this.textChunks = this.chunkText(fullText);
+    this.currentChunkIndex = 0;
+    this.startTime = Date.now();
+    this.isSpeaking = true;
+    this.speakNextChunk();
+  }
+
+  private async speakNextChunk() {
+    if (!this.isSpeaking || this.currentChunkIndex >= this.textChunks.length) {
+      this.stop();
       return;
     }
 
+    const chunk = this.textChunks[this.currentChunkIndex];
     try {
-      this.isSpeaking = true;
-
-      // Split text into manageable chunks
-      const chunks = this.chunkText(text);
-
-      for (const chunk of chunks) {
-        await TextToSpeech.speak({
-          text: chunk,
-          rate: this.currentRate,
-          lang: 'en-US',
-          volume: 1.0,
-          pitch: 1.0,
-        });
-
-        // Add slight delay between chunks
-        await new Promise((resolve) => setTimeout(resolve, 50));
-      }
-    } catch (error) {
-      console.error('TTS Error Details:', {
-        error,
-        textLength: text?.length,
-        first50Chars: text?.substring(0, 50),
+      await TextToSpeech.speak({
+        text: chunk,
+        rate: this.currentRate,
       });
-    } finally {
-      this.isSpeaking = false;
+      this.currentChunkIndex++;
+      this.speakNextChunk();
+    } catch (e) {
+      console.error('Speech error:', e);
+      this.stop();
     }
+  }
+
+  async pause() {
+    if (this.isSpeaking) {
+      this.isSpeaking = false;
+      clearTimeout(this.pauseTimeout);
+      await TextToSpeech.stop();
+    }
+  }
+
+  async resume() {
+    if (!this.isSpeaking && this.currentChunkIndex < this.textChunks.length) {
+      this.isSpeaking = true;
+      this.startTime = Date.now() - this.getElapsedPausedTime();
+      this.speakNextChunk();
+    }
+  }
+
+  async stop() {
+    this.isSpeaking = false;
+    clearTimeout(this.pauseTimeout);
+    this.textChunks = [];
+    this.currentChunkIndex = 0;
+    await TextToSpeech.stop();
+  }
+
+  private getElapsedPausedTime(): number {
+    return Date.now() - this.startTime;
   }
 
   private chunkText(text: string): string[] {
@@ -79,11 +105,6 @@ export class TtsService {
     return chunks;
   }
 
-  async stop() {
-    await TextToSpeech.stop();
-    this.isSpeaking = false;
-  }
-
   setSpeed(rate: number) {
     this.currentRate = Math.min(Math.max(rate, 0.5), 2.0);
     this.savePreferences();
@@ -97,7 +118,6 @@ export class TtsService {
       .replace(/\s+/g, ' ')
       .trim();
   }
-
   private async savePreferences() {
     await Preferences.set({
       key: 'tts-settings',
