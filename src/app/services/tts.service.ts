@@ -10,6 +10,7 @@ export class TtsService {
   private textChunks: string[] = [];
   private startTime = 0;
   private pauseTimeout: any;
+  private pausePosition = 0;
 
   constructor() {
     this.initializeTts();
@@ -23,11 +24,10 @@ export class TtsService {
     await this.stop();
     this.textChunks = this.chunkText(fullText);
     this.currentChunkIndex = 0;
-    this.startTime = Date.now();
+    this.pausePosition = 0;
     this.isSpeaking = true;
     this.speakNextChunk();
   }
-
   private async speakNextChunk() {
     if (!this.isSpeaking || this.currentChunkIndex >= this.textChunks.length) {
       this.stop();
@@ -35,6 +35,8 @@ export class TtsService {
     }
 
     const chunk = this.textChunks[this.currentChunkIndex];
+    this.startTime = Date.now();
+
     try {
       await TextToSpeech.speak({
         text: chunk,
@@ -43,7 +45,6 @@ export class TtsService {
       this.currentChunkIndex++;
       this.speakNextChunk();
     } catch (e) {
-      console.error('Speech error:', e);
       this.stop();
     }
   }
@@ -51,24 +52,34 @@ export class TtsService {
   async pause() {
     if (this.isSpeaking) {
       this.isSpeaking = false;
-      clearTimeout(this.pauseTimeout);
+      this.pausePosition += Date.now() - this.startTime;
       await TextToSpeech.stop();
     }
   }
 
   async resume() {
-    if (!this.isSpeaking && this.currentChunkIndex < this.textChunks.length) {
+    if (this.textChunks.length > 0 && !this.isSpeaking) {
       this.isSpeaking = true;
-      this.startTime = Date.now() - this.getElapsedPausedTime();
-      this.speakNextChunk();
+
+      // Calculate remaining time in current chunk
+      const remainingInChunk = Math.max(
+        0,
+        1000 / this.currentRate - this.pausePosition
+      );
+
+      // Wait for remaining time before continuing
+      setTimeout(() => {
+        this.pausePosition = 0;
+        this.speakNextChunk();
+      }, remainingInChunk);
     }
   }
 
   async stop() {
     this.isSpeaking = false;
-    clearTimeout(this.pauseTimeout);
     this.textChunks = [];
     this.currentChunkIndex = 0;
+    this.pausePosition = 0;
     await TextToSpeech.stop();
   }
 

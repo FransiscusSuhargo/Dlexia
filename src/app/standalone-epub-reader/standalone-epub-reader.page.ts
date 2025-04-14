@@ -118,6 +118,12 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
         this.extractText();
       });
 
+      this.rendition.themes.default({
+        'body, p, span, div, h1, h2, h3, h4, h5, h6': {
+          'font-family': "'OpenDyslexic', sans-serif !important"
+        }
+      });
+      
       await this.rendition.display();
     } catch (error) {
       console.error('Error loading EPUB:', error);
@@ -215,30 +221,35 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
   async toggleTts() {
     try {
       if (this.ttsState === 'stopped') {
-        this.ttsState = 'playing'; // Update state first
+        this.ttsState = 'playing';
         await this.playTts();
-        console.log(this.ttsState);
       } else if (this.ttsState === 'playing') {
-        this.ttsState = 'paused'; // Update state first
+        this.ttsState = 'paused';
         await this.tts.pause();
-        console.log(this.ttsState);
       } else {
-        // paused state
-        this.ttsState = 'playing'; // Update state first
+        this.ttsState = 'playing';
         await this.tts.resume();
-        console.log(this.ttsState);
       }
     } catch (e) {
-      console.error('TTS error:', e);
       this.ttsState = 'stopped';
+      console.error('TTS Error:', e);
     }
   }
 
   private async playTts() {
     if (!this.currentText) return;
-    await this.tts.speak(this.currentText);
-  }
 
+    try {
+      await this.tts.speak(this.currentText);
+      // Automatically update state when finished
+      if (this.ttsState === 'playing') {
+        this.ttsState = 'stopped';
+      }
+    } catch (e) {
+      this.ttsState = 'stopped';
+      throw e;
+    }
+  }
   // Modified RSVP methods
   toggleRsvp() {
     console.log('Toggle RSVP');
