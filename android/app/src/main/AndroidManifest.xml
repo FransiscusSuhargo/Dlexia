@@ -40,5 +40,9 @@
 
     <!-- Permissions -->
 
-    <uses-permission android:name="android.permission.INTERNET" />
-</manifest>
+<uses-permission android:name="android.permission.INTERNET" />
+<queries>
+  <intent>
+    <action android:name="android.speech.tts.TextToSpeech" />
+  </intent>
+</queries></manifest>

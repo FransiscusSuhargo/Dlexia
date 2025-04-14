@@ -1,6 +1,14 @@
 import { Component } from '@angular/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { IonApp, IonRouterOutlet, NavController, Platform } from '@ionic/angular/standalone';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import {
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonIcon,
+  IonLabel,
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-root',

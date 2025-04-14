@@ -1,0 +1,41 @@
+/* library.component.scss */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    ion-icon {
+      font-size: 4rem;
+      color: var(--ion-color-medium);
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .book-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    
+    ion-thumbnail {
+      margin: 8px;
+      width: 60px;
+      height: 80px;
+      
+      img {
+        border-radius: 4px;
+        object-fit: cover;
+      }
+    }
+  
+    h2 {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+  
+    ion-note {
+      font-size: 0.8rem;
+    }
+  }

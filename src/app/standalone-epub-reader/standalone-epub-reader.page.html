@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>EPUB Reader</ion-title>
+    <ion-spinner *ngIf="!rendition" slot="end"></ion-spinner>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleTtsControls()"> MICs </ion-button>
+    <ion-button (click)="toggleRsvp()">
+      RSVP
+    </ion-button>
+  </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div #viewer id="viewer" style="height: 100%; width: 100%"></div>
+  <!-- Add inside <ion-content> -->
+  
+
+  <!-- TTS Controls INSIDE content with fixed positioning -->
+  <div *ngIf="rsvpActive" class="rsvp-overlay" (click)="toggleRsvpPause()">
+    <div class="rsvp-word">{{ currentRsvpWord }}</div>
+    <div class="rsvp-controls">
+      <ion-range
+        min="100"
+        max="1000"
+        step="50"
+        [(ngModel)]="rsvpSpeed"
+        (ionChange)="setRsvpSpeed($event)"
+      >
+        <ion-label slot="start">{{ rsvpSpeed }}wpm</ion-label>
+      </ion-range>
+    </div>
+  </div>
+  <div class="tts-controls">
+    <ion-toolbar>
+      <!-- Your existing control content -->
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-buttons>
+              <ion-button (click)="playTts()"> PLAY </ion-button>
+              <ion-button [disabled]="!tts.isSpeaking" (click)="pauseTts()">
+                PAUSEs
+              </ion-button>
+            </ion-buttons>
+          </ion-col>
+          <ion-col size="6">
+            <ion-range
+              min="0.5"
+              max="2"
+              step="0.1"
+              [value]="tts.currentRate"
+              (ionChange)="tts.setSpeed(+$event.detail.value)"
+            >
+              <ion-label slot="start">Slow</ion-label>
+              <ion-label slot="end">Fast</ion-label>
+            </ion-range>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+  </div>
+</ion-content>

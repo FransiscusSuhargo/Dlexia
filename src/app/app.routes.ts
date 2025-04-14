@@ -19,10 +19,15 @@ export const routes: Routes = [
         loadComponent: () => import('./tabs/library/library.page').then(m => m.LibraryPage)
       },
       {
+        path: 'standalone-epub-reader',
+        loadComponent: () => import('./standalone-epub-reader/standalone-epub-reader.page').then( m => m.StandaloneEpubReaderPage)
+      },
+      {
         path: '',
         redirectTo: '/library',
         pathMatch: 'full'
       }
+      
     ]
   },
   {
