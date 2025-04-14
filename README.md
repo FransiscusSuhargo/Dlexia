@@ -25,5 +25,7 @@ Aplikasi Dlexia dirancang khusus untuk memudahkan penyandang disleksia dan ADHD 
 
  3. Untuk menjalankan proyek masukan command: 
  - npx cap run android --target <device-id>
+
+ 4. <a href='https://drive.google.com/file/d/1MESxie-7LobqZdcqZTADE8abBrQcomuO/view?usp=drive_link'>APK Dlexia</a>
  
 
