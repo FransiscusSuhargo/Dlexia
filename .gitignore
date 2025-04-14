@@ -55,3 +55,9 @@ hooks/
 # IDE-specific files
 .vscode/
 
+.angular/cache/19.2.7/app/angular-compiler.db
+.angular/cache/19.2.7/app/.tsbuildinfo
+.angular/cache/19.2.7/app/angular-compiler.db
+android/app/capacitor.build.gradle
+android/capacitor.settings.gradle
+ios/App/Podfile

@@ -106,8 +106,7 @@ export class StandaloneEpubReaderPage implements AfterViewInit, OnDestroy {
         width: '100%',
         height: '100%',
         spread: 'none',
-        flow: 'scrolled',
-        // flow: 'scrolled-continuous',
+        flow: 'scrolled-continuous',
         manager: 'continuous',
         allowScriptedContent: true,
       });
