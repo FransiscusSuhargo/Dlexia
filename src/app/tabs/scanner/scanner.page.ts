@@ -14,6 +14,10 @@ import { DocumentScanner } from 'capacitor-document-scanner';
 import { Capacitor } from '@capacitor/core';
 import { IonicModule } from '@ionic/angular';
 
+//untuk TTS
+import { TtsService } from '../../services/tts.service';
+import { ViewWillLeave } from '@ionic/angular';
+
 @Component({
   selector: 'app-scanner',
   templateUrl: './scanner.page.html',
@@ -21,7 +25,7 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonContent, IonicModule, IonHeader, IonTitle, IonToolbar]
 })
-export class ScannerPage{
+export class ScannerPage implements ViewWillLeave{
   detectedText = ""; 
   async recognizeText(base64Image: string) {
     try {
@@ -37,6 +41,30 @@ export class ScannerPage{
       console.error('Error recognizing text:', error);
     }
   }
+
+  //untuk TTS
+  async toggleTts() {
+    if (this.tts.isSpeaking) {
+      await this.tts.stop();
+    } else {
+      const cleanText = this.detectedText
+        .replace(/\n+/g, '. ') // Convert newlines to pauses
+        .replace(/\s+/g, ' '); // Remove extra spaces
+      await this.tts.speak(cleanText);
+    }
+  }
+  
+  updateSpeed(event: CustomEvent) {
+    this.tts.setSpeed(event.detail.value);
+  }
+
+  ionViewWillLeave() {
+    // Stop TTS when leaving page
+    if (this.tts.isSpeaking) {
+      this.tts.stop();
+    }
+  }
+
 
   async scanDocument() {
     try {
@@ -108,5 +136,5 @@ export class ScannerPage{
   //     console.error('Error taking picture:', error);
   //   }
   // }
-  constructor() {}
+  constructor(public tts: TtsService) {}
 }

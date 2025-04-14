@@ -6,6 +6,11 @@
 
 <ion-content [fullscreen]="true">
   
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin: 20% 5%;">
+      <ion-fab-button (click)="toggleTts()" style="--color: #FFEECE; border-radius: 50%; --background: #92A695;">
+        TTS
+      </ion-fab-button>
+  </ion-fab> 
   
   <ion-button expand="full" (click)="scanDocument()">
     <ion-icon slot="start" name="camera"></ion-icon> 
