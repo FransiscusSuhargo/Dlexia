@@ -1,7 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "ionic.dlexia"
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+  namespace "ionic.dlexia"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "ionic.dlexia"

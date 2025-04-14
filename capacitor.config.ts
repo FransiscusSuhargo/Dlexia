@@ -16,6 +16,13 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: true // Add this line
   }
-};
+,
+    android: {
+       buildOptions: {
+          keystorePath: 'd:\Kuliah\WEfindIT2025\dlexia\key.jks',
+          keystoreAlias: 'key0',
+       }
+    }
+  };
 
 export default config;
