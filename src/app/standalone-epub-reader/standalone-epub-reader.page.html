@@ -10,7 +10,7 @@
   >
     <ion-fab-button
       (click)="toggleTts()"
-      style="--color: #ffeece; --background: #92a695"
+      style="--color: #ffeece; --background: #92a695; margin: 130px 3px;"
     >
       {{ ttsState === 'playing' ? '⏸' : '▶' }}
     </ion-fab-button>
@@ -20,12 +20,12 @@
   <ion-fab
     *ngIf="rsvpState === 'stopped'"
     vertical="bottom"
-    horizontal="start"
+    horizontal="end"
     slot="fixed"
   >
     <ion-fab-button
       (click)="toggleRsvp()"
-      style="--color: #ffeece; --background: #92a695"
+      style="--color: #ffeece; --background: #92a695; margin: 50px 3px;"
     >
       RSVP
     </ion-fab-button>
