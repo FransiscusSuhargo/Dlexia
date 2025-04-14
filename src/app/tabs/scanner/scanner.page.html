@@ -6,6 +6,11 @@
 
 <ion-content [fullscreen]="true">
   
+  
+  <ion-button expand="full" (click)="scanDocument()">
+    <ion-icon slot="start" name="camera"></ion-icon> 
+    Scan Document</ion-button>
+
   <div class="scanned-container">
     <h2>Scanned Document</h2>
     <img id="scannedImage" alt="Scanned Document" />
@@ -17,9 +22,5 @@
       </ion-text>
     </ion-item>
   </ion-list>
-
-  <ion-button expand="full" (click)="scanDocument()">
-    <ion-icon slot="start" name="camera"></ion-icon> 
-    Scan Document</ion-button>
 
 </ion-content>

@@ -1,17 +1,27 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>EPUB Reader</ion-title>
-    <ion-spinner *ngIf="!rendition" slot="end"></ion-spinner>
-    <ion-buttons slot="end">
-      <ion-button (click)="toggleTtsControls()"> MICs </ion-button>
-    <ion-button (click)="toggleRsvp()">
-      RSVP
-    </ion-button>
-  </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
+  <!-- <ion-buttons slot="end">
+    <ion-button > MICs </ion-button>
+    <ion-button > RSVP </ion-button>
+  </ion-buttons> -->
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin: 40% 5%;">
+      <ion-fab-button (click)="toggleTtsControls()" style="--color: #FFEECE; border-radius: 50%; --background: #92A695;">
+        TTS
+      </ion-fab-button>
+  </ion-fab> 
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end" style="margin: 20% 5%;">
+    <ion-fab-button (click)="toggleRsvp()" style="--color: #FFEECE; border-radius: 50%; --background: #92A695;">
+      RSVP
+    </ion-fab-button>
+  </ion-fab>
+
   <div #viewer id="viewer" style="height: 100%; width: 100%"></div>
   <!-- Add inside <ion-content> -->
   
@@ -40,7 +50,7 @@
             <ion-buttons>
               <ion-button (click)="playTts()"> PLAY </ion-button>
               <ion-button [disabled]="!tts.isSpeaking" (click)="pauseTts()">
-                PAUSEs
+                PAUSES
               </ion-button>
             </ion-buttons>
           </ion-col>

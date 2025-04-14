@@ -7,10 +7,10 @@ import { LibraryService } from '../services/library.service';
 @Component({
   selector: 'app-file-upload',
   template: `
-    <ion-button (click)="pickEpubFiles()">
-      <ion-icon name="document-attach"></ion-icon>
-      Add EPUB Files
-    </ion-button>
+    <label>
+      <ng-content></ng-content>
+      <input type="file" (click)="pickEpubFiles()" hidden multiple accept=".epub">
+    </label>
   `,
   standalone: true,
   imports: [IonButton, IonIcon],
